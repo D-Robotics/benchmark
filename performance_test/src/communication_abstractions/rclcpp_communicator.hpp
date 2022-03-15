@@ -101,6 +101,7 @@ public:
    */
   void publish(std::int64_t time)
   {
+#ifndef USING_HBMEM
     if (!m_publisher) {
       auto ros2QOSAdapter = m_ROS2QOSAdapter;
       m_publisher = m_node->create_publisher<DataType>(
@@ -123,6 +124,34 @@ public:
       unlock();
       m_publisher->publish(m_data);
     }
+#else
+    if (m_ec.is_zero_copy_transfer()) {
+      if (!m_hbmem_publisher) {
+        auto ros2QOSAdapter = m_ROS2QOSAdapter;
+        m_hbmem_publisher = m_node->create_publisher_hbmem<DataType>(
+          m_ec.topic_name() + m_ec.pub_topic_postfix(), ros2QOSAdapter);
+      }
+      auto borrowed_message = m_hbmem_publisher->borrow_loaned_message();
+      if (borrowed_message.is_valid()) {
+        lock();
+        init_msg(borrowed_message.get(), time);
+        increment_sent();  // We increment before publishing so we don't have to lock twice.
+        unlock();
+        m_hbmem_publisher->publish(std::move(borrowed_message));
+      }
+    } else {
+      if (!m_publisher) {
+        auto ros2QOSAdapter = m_ROS2QOSAdapter;
+        m_publisher = m_node->create_publisher<DataType>(
+          m_ec.topic_name() + m_ec.pub_topic_postfix(), ros2QOSAdapter);
+      }
+      lock();
+      init_msg(m_data, time);
+      increment_sent();  // We increment before publishing so we don't have to lock twice.
+      unlock();
+      m_publisher->publish(m_data);
+    }
+#endif
   }
 
   /// Reads received data from ROS 2 using callbacks
@@ -177,7 +206,9 @@ protected:
 
 private:
   std::shared_ptr<::rclcpp::Publisher<DataType>> m_publisher;
-
+#ifdef USING_HBMEM
+  std::shared_ptr<::rclcpp::PublisherHbmem<DataType>> m_hbmem_publisher;
+#endif
   DataType m_data;
 
   inline
