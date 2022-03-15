@@ -44,17 +44,36 @@ public:
   /// Reads received data from ROS 2 using callbacks
   void update_subscription() override
   {
+#ifndef USING_HBMEM
     if (!m_subscription) {
       m_subscription = this->m_node->template create_subscription<DataType>(
         this->m_ec.topic_name() + this->m_ec.sub_topic_postfix(), this->m_ROS2QOSAdapter,
         [this](const typename DataType::SharedPtr data) {this->callback(data);});
     }
+#else
+    if (this->m_ec.is_zero_copy_transfer()) {
+      if (!m_hbmem_subscription) {
+        m_hbmem_subscription = this->m_node->template create_subscription_hbmem<DataType>(
+          this->m_ec.topic_name() + this->m_ec.sub_topic_postfix(), 10,
+          [this](const typename DataType::SharedPtr data) {this->callback(data);});
+      }
+    } else {
+      if (!m_subscription) {
+        m_subscription = this->m_node->template create_subscription<DataType>(
+          this->m_ec.topic_name() + this->m_ec.sub_topic_postfix(), this->m_ROS2QOSAdapter,
+          [this](const typename DataType::SharedPtr data) {this->callback(data);});
+      }
+    }
+#endif
     m_executor.spin_once(std::chrono::milliseconds(100));
   }
 
 private:
   Executor m_executor;
   std::shared_ptr<::rclcpp::Subscription<DataType>> m_subscription;
+#ifdef USING_HBMEM
+  std::shared_ptr<::rclcpp::SubscriptionHbmem<DataType>> m_hbmem_subscription;
+#endif
 };
 
 template<class Msg>
