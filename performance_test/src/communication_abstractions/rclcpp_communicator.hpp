@@ -131,11 +131,13 @@ public:
           m_ec.topic_name() + m_ec.pub_topic_postfix(), 10);
       }
       auto borrowed_message = m_hbmem_publisher->borrow_loaned_message();
-      lock();
-      init_msg(borrowed_message.get(), time);
-      increment_sent();  // We increment before publishing so we don't have to lock twice.
-      unlock();
-      m_hbmem_publisher->publish(std::move(borrowed_message));
+      if (borrowed_message.is_valid()) {
+        lock();
+        init_msg(borrowed_message.get(), time);
+        increment_sent();  // We increment before publishing so we don't have to lock twice.
+        unlock();
+        m_hbmem_publisher->publish(std::move(borrowed_message));
+      }
     } else {
       if (!m_publisher) {
         auto ros2QOSAdapter = m_ROS2QOSAdapter;
