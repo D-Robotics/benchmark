@@ -127,8 +127,9 @@ public:
 #else
     if (m_ec.is_zero_copy_transfer()) {
       if (!m_hbmem_publisher) {
+        auto ros2QOSAdapter = m_ROS2QOSAdapter;
         m_hbmem_publisher = m_node->create_publisher_hbmem<DataType>(
-          m_ec.topic_name() + m_ec.pub_topic_postfix(), 10);
+          m_ec.topic_name() + m_ec.pub_topic_postfix(), ros2QOSAdapter);
       }
       auto borrowed_message = m_hbmem_publisher->borrow_loaned_message();
       if (borrowed_message.is_valid()) {

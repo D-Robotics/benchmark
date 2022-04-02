@@ -54,7 +54,7 @@ public:
     if (this->m_ec.is_zero_copy_transfer()) {
       if (!m_hbmem_subscription) {
         m_hbmem_subscription = this->m_node->template create_subscription_hbmem<DataType>(
-          this->m_ec.topic_name() + this->m_ec.sub_topic_postfix(), 10,
+          this->m_ec.topic_name() + this->m_ec.sub_topic_postfix(), this->m_ROS2QOSAdapter,
           [this](const typename DataType::SharedPtr data) {this->callback(data);});
       }
     } else {
