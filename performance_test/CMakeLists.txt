@@ -259,8 +259,7 @@ include(ExternalProject)
 set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
 externalproject_add(
   tclap
-  # GIT_REPOSITORY http://git.code.sf.net/p/tclap/code
-  GIT_REPOSITORY https://c-gitlab.horizon.ai/third_party/tclap/code.git
+  GIT_REPOSITORY http://git.code.sf.net/p/tclap/code
   GIT_TAG 1.4.0-rc1
   GIT_SHALLOW TRUE
   PREFIX ${EXTERNAL_INSTALL_LOCATION}
@@ -275,10 +274,8 @@ include_directories(SYSTEM ${EXTERNAL_INSTALL_LOCATION}/tclap/include)
 
 externalproject_add(
   rapidjson
-  # GIT_REPOSITORY https://github.com/Tencent/rapidjson.git
-  # GIT_TAG v1.1.0
-  GIT_REPOSITORY https://c-gitlab.horizon.ai/third_party/tencent/rapidjson.git
-  GIT_TAG feature-tros
+  GIT_REPOSITORY https://github.com/Tencent/rapidjson.git
+  GIT_TAG v1.1.0
   GIT_SHALLOW TRUE
   PREFIX ${EXTERNAL_INSTALL_LOCATION}
   SOURCE_DIR ${EXTERNAL_INSTALL_LOCATION}/rapidjson
@@ -296,8 +293,7 @@ include_directories(SYSTEM ${EXTERNAL_INSTALL_LOCATION}/rapidjson/include)
 
 externalproject_add(
   tabulate
-  # GIT_REPOSITORY https://github.com/p-ranav/tabulate.git
-  GIT_REPOSITORY https://c-gitlab.horizon.ai/third_party/p-ranav/tabulate.git
+  GIT_REPOSITORY https://github.com/p-ranav/tabulate.git
   GIT_TAG v1.4
   GIT_SHALLOW TRUE
   PREFIX ${EXTERNAL_INSTALL_LOCATION}
@@ -312,8 +308,7 @@ include_directories(SYSTEM ${EXTERNAL_INSTALL_LOCATION}/tabulate/include)
 
 externalproject_add(
   sole
-  # GIT_REPOSITORY https://github.com/r-lyeh-archived/sole.git
-  GIT_REPOSITORY https://c-gitlab.horizon.ai/third_party/r-lyeh-archived/sole.git
+  GIT_REPOSITORY https://github.com/r-lyeh-archived/sole.git
   GIT_TAG 1.0.2
   GIT_SHALLOW TRUE
   PREFIX ${EXTERNAL_INSTALL_LOCATION}
