@@ -259,7 +259,7 @@ include(ExternalProject)
 set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
 externalproject_add(
   tclap
-  GIT_REPOSITORY http://git.code.sf.net/p/tclap/code
+  GIT_REPOSITORY https://github.com/mirror/tclap.git
   GIT_TAG 1.4.0-rc1
   GIT_SHALLOW TRUE
   PREFIX ${EXTERNAL_INSTALL_LOCATION}
