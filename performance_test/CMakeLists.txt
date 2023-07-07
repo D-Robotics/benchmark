@@ -35,7 +35,7 @@ endif()
 option(PERFORMANCE_TEST_RT_ENABLED
   "Enable options for thread and memory optimization. This may not build on all platforms"
   ${PERFORMANCE_TEST_RT_ENABLED_DEFAULT})
-option(BUILD_HBMEM "Build hbmem" OFF)
+
 if(${BUILD_HBMEM})
   add_definitions(-DUSING_HBMEM)
 endif()
