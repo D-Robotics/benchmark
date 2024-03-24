@@ -1,4 +1,4 @@
-English| [简体中文](./README_cn.md)
+[English](./README.md) | 简体中文
 
 # performance_test
 
@@ -49,7 +49,7 @@ This example shows how to test the non-functional performance of the following c
 
 ```bash
 source /opt/ros/foxy/setup.bash
-cd ~/perf_test_ws```
+cd ~/perf_test_ws
 colcon build --cmake-args -DPERFORMANCE_TEST_CYCLONEDDS_ENABLED=ON
 source ./install/setup.bash
 ```
@@ -98,7 +98,9 @@ source install/setup.bash
 ## Running an experiment
 
 The performance_test experiments are run through the `perf_test` executable.
-To find the available settings, run with `--help` (note the required and default arguments):```bash
+To find the available settings, run with `--help` (note the required and default arguments):
+
+```bash
 ~/perf_test_ws$ ./install/performance_test/lib/performance_test/perf_test --help
 ```
 
@@ -147,7 +149,14 @@ perf_test <options> --roundtrip-mode Main
 
 # On the relay machine:
 perf_test <options> --roundtrip-mode Relay
-```## Middleware plugins
+```
+
+In relay mode, the Main machine sends messages to the Relay machine, which immediately sends the
+messages back. The Main machine receives the relayed message, and reports the round-trip latency.
+Therefore, the reported latency will be roughly double the latency compared to the latency reported
+in non-relay mode.
+
+## Middleware plugins
 
 ### Native plugins
 
@@ -190,7 +199,8 @@ implemented:
     to be enabled.
   - When the runtime switch is enabled,
     [RouDi](https://github.com/eclipse-iceoryx/iceoryx/blob/master/doc/website/getting-started/overview.md#roudi)
-    must be running.- If the runtime switch is enabled, but `--zero-copy` is not added, then the plugin will not use
+    must be running.
+  - If the runtime switch is enabled, but `--zero-copy` is not added, then the plugin will not use
     the loaned sample API, but iceoryx will still transport the samples.
   - See [Dockerfile.mashup](dockerfiles/Dockerfile.mashup)
 - Docker file: [Dockerfile.CycloneDDS-CXX](dockerfiles/Dockerfile.CycloneDDS-CXX)
@@ -239,7 +249,9 @@ implemented:
 - Default transports:
   | INTRA | IPC on same machine | Distributed system |
   |-------|---------------------|--------------------|
-  | TCP   | TCP                 | TCP                |#### RTI Connext DDS
+  | TCP   | TCP                 | TCP                |
+
+#### RTI Connext DDS
 
 - [RTI Connext DDS 5.3.1+](https://www.rti.com/products/connext-dds-professional)
 - CMake build flag: `-DPERFORMANCE_TEST_CONNEXTDDS_ENABLED=ON`
@@ -287,15 +299,18 @@ through the ROS2 `rclcpp::publisher` and `rclcpp::subscriber` API.
   - ROS 2 Foxy is pre-configured to use rmw_fastrtps_cpp.
     - Follow [these instructions](https://docs.ros.org/en/foxy/Guides/Working-with-multiple-RMW-implementations.html)
     to use a different RMW implementation with ROS 2.
-    - You can find a list of several other middleware options[在这里](https://docs.ros.org/en/foxy/Concepts/About-Different-Middleware-Vendors.html).
-- 默认传输方式：取决于底层DDS实现
+    - You can find a list of several other middleware options
+      [here](https://docs.ros.org/en/foxy/Concepts/About-Different-Middleware-Vendors.html).
+- Default transports: depends on underlying DDS implementation
 
-## 分析结果
+## Analyze the results
 
-运行带有`-l`标志的实验后，将记录一个CSV文件。可以通过在运行实验之前设置`APEX_PERFORMANCE_TEST`环境变量来向CSV文件添加自定义数据，例如
+After an experiment is run with the `-l` flag, a CSV file is recorded. It is possible to add custom
+data to the CSV file by setting the`APEX_PERFORMANCE_TEST` environment variable before running an
+experiment, e.g.
 
 ```json
-# JSON格式
+# JSON format
 export APEX_PERFORMANCE_TEST="
 {
 \"My Version\": \"1.0.4\",
@@ -305,20 +320,21 @@ export APEX_PERFORMANCE_TEST="
 "
 ```
 
-### 绘制结果
+### Plot results
 
-performance_test工具提供了几种工具来绘制生成的结果：
+The performance_test tool provides several tools to plot the generated results:
 
-1. 结果渲染在PDF文件中：方便分享结果
+1. Results rendered on a PDF file: handy to share results
     <img src="plotter_generated_pdf.png"  width="1000">
-1. 结果渲染在Jupyter笔记本中：用于比较多个实验
+1. Results rendered in a Jupyter notebook: used to compare multiple experiments
     <img src="performance_test/helper_scripts/apex_performance_plotter/example_plot_two_experiments.png"  width="1000">
 
-绘图工具需要python3和texlive。在Ubuntu系统上，您需要安装以下软件包：
+The plot tool requires python3 and texlive. On an Ubuntu system you will need to
+install the following packages:
 
 `sudo apt-get install python3 python3-pip texlive texlive-pictures texlive-luatex`
 
-启动Python虚拟环境并安装所需的Python包：
+Start a Python virtual environment and install the required Python packages:
 
 ```bash
 cd performance_test/helper_scripts/apex_performance_plotter
@@ -327,24 +343,30 @@ pipenv shell
 pipenv install --ignore-pipefile
 ```
 
-#### 用法
+#### Usage
 
-要从日志文件生成PDF，请在上一步安装的`perfplot`二进制文件中调用：
+To generate a PDF from the logfile, invoke the `perfplot` binary installed in the previous step:
 
 `perfplot <filename1> <filename2> ...`
 
-另外，请务必查看`perfplot -h`以获取额外选项。:point_up: **Common Pitfalls**
+Be sure to also check `perfplot -h` for additional options.
 
-所有延迟指标都由订阅者进程收集和计算。
-对于进程间通信，建议为日志文件提供不同的前缀：
+>>>
+:point_up: **Common Pitfalls**
+
+All of the latency metrics are collected and calculated by the subscriber process.
+For interprocess communication, it is recommended to provide different prefixes for
+the log files:
 
 ```bash
 perf_test -c rclcpp-single-threaded-executor --msg Array1k -p 0 -s 1 -l log_sub
 perf_test -c rclcpp-single-threaded-executor --msg Array1k -p 1 -s 0 -l log_pub
 ```
 
-然后，要绘制延迟指标，请在订阅者的日志文件上调用perfplot。
-如果在发布者的日志文件上调用perfplot，则会绘制CPU和内存指标，但延迟图表将为空。
+Then, to plot the latency metrics, invoke perfplot on the subscriber's log file.
+If perfplot is invoked on the publisher's log file, then the CPU and memory
+metrics will be plotted, but the latency plot will be empty.
+>>>
 
 To analyze the results in a Jupyter notebook run the following commands:
 
@@ -358,19 +380,27 @@ deactivate
 
 ## Architecture
 
-Apex.AI的《ROS 2中的性能测试》白皮书
-([可在此处获取](https://drive.google.com/file/d/15nX80RK6aS8abZvQAOnMNUEgh7px9V5S/view))
-描述了如何设计一个公平且无偏的性能测试，这也是这个项目的基础。
+Apex.AI's _Performance Testing in ROS 2_ white paper
+([available here](https://drive.google.com/file/d/15nX80RK6aS8abZvQAOnMNUEgh7px9V5S/view))
+describes how to design a fair and unbiased performance test, and is the basis for this project.
 <center><img src="architecture.png"></center>
 
 ## Future extensions and limitations
 
-- 像DDS这样的通信框架有大量的设置。该工具仅允许配置最常见的QoS设置。其他QoS设置已在应用程序中硬编码。
-- 每个话题只允许一个发布者，因为数据验证逻辑不支持将数据匹配到不同的发布者。
-- 一些通信插件在收到过多数据时可能会陷入内部循环。解决此类问题是该工具的目标之一。
-- FastRTPS等待集不支持超时，这可能导致接收端不中止。在这种情况下，必须手动终止性能测试。
-- 使用`reliable` QoS和历史种类设置为`keep_all`的Connext DDS Micro INTRA传输与Connext Micro不兼容。在使用`reliable`时，始终将`keep-last`作为QoS历史种类。
-请把以下内容中出现中文的部分翻译成英文，保留原有的格式和内容：Possible additional communication which could be implemented are:
+- Communication frameworks like DDS have a huge amount of settings. This tool only allows the most
+  common QOS settings to be configured. The other QOS settings are hardcoded in the application.
+- Only one publisher per topic is allowed, because the data verification logic does not support
+  matching data to the different publishers.
+- Some communication plugins can get stuck in their internal loops if too much data is received.
+  Figuring out ways around such issues is one of the goals of this tool.
+- FastRTPS wait-set does not support timeouts which can lead to the receiving not aborting. In that
+  case the performance test must be manually killed.
+- Using Connext DDS Micro INTRA transport with `reliable` QoS and history kind set to `keep_all`
+  [is not supported with Connext
+  Micro](https://community.rti.com/static/documentation/connext-micro/3.0.3/doc/html/usersmanual/transports/INTRA.html#reliability-and-durability).
+  Set `keep-last` as QoS history kind always when using `reliable`.
+
+Possible additional communication which could be implemented are:
 
 - Raw UDP communication
 
