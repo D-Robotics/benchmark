@@ -49,7 +49,9 @@ ros2 run performance_report reporter \
 ```
 
 The above example only runs and plots one experiement, however multiple experiements can be ran
-automatically by specifying it in the configuration file.Try the above commands again, this time replacing the `yaml` file with `*_many_experiments.yaml`
+automatically by specifying it in the configuration file.
+
+Try the above commands again, this time replacing the `yaml` file with `*_many_experiements.yaml`
 for each executable.
 
 When running many experiments the `runner` will by default skip any experiments that already have
@@ -97,7 +99,6 @@ ros2 run performance_report reporter -l log_dir -c report.yaml
 - Currently, this tool is intended for ROS 2 with rmw_cyclone_dds, or Apex.OS with
   Apex.Middleware. It has not been tested with any other transport.
 - If the run configuration includes `SHMEM` or `ZERO_COPY` transport, then a file for
-  configuring the middleware will be created to enable the shared memory transfer.- 您必须在运行实验之前启动 RouDi。此工具不会自动为您启动它。
-
-- You must start RouDi before running the experiments. This tool will not automatically
-start it for you.
+  configuring the middleware will be created to enable the shared memory transfer.
+  - You must start RouDi before running the experiments. This tool will not automatically
+    start it for you.
