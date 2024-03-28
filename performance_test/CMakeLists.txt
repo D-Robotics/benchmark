@@ -36,9 +36,7 @@ option(PERFORMANCE_TEST_RT_ENABLED
   "Enable options for thread and memory optimization. This may not build on all platforms"
   ${PERFORMANCE_TEST_RT_ENABLED_DEFAULT})
 
-if(${BUILD_HBMEM})
-  add_definitions(-DUSING_HBMEM)
-endif()
+add_definitions(-DUSING_HBMEM)
 
 # Ensure we use the CMake support from ConnextDDS instead of the one provided
 # with the installed RMW package.

@@ -54,7 +54,7 @@ public:
 #else
     if (this->m_ec.is_zero_copy_transfer()) {
       if (!m_hbmem_subscription) {
-        m_hbmem_subscription = this->m_node->template create_subscription_hbmem<DataType>(
+        m_hbmem_subscription = this->m_node->template create_subscription<DataType>(
           this->m_ec.topic_name() + this->m_ec.sub_topic_postfix(), this->m_ROS2QOSAdapter,
           [this](const typename DataType::SharedPtr data) {this->callback(data);});
       }
@@ -73,7 +73,7 @@ private:
   Executor m_executor;
   std::shared_ptr<::rclcpp::Subscription<DataType>> m_subscription;
 #ifdef USING_HBMEM
-  std::shared_ptr<::rclcpp::SubscriptionHbmem<DataType>> m_hbmem_subscription;
+  std::shared_ptr<::rclcpp::Subscription<DataType>> m_hbmem_subscription;
 #endif
 };
 
