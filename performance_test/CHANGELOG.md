@@ -1,8 +1,9 @@
 # Changelog for package performance_test
 
-tros_2.1.0 (2024-04-09)
+tros_2.1.0 (2024-04-11)
 ------------------
 1. 适配ros2 humble零拷贝。
+2. 只编译Array类型消息，降低编译时内存占用。
 
 tros_2.0.1 (2023-07-07)
 ------------------
