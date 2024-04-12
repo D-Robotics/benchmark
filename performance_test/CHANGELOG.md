@@ -1,5 +1,9 @@
 # Changelog for package performance_test
 
+tros_2.1.0rc1 (2024-04-12)
+------------------
+1. package.xml中`osrf_testing_tools_cpp`依赖项由test_depend类型变更为exec_depend，解决运行时未安装依赖的问题。
+
 tros_2.1.0 (2024-04-11)
 ------------------
 1. 适配ros2 humble零拷贝。
