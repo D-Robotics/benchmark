@@ -1,4 +1,7 @@
 # Changelog for package performance_test
+tros_2.1.0 (2025-12-01)
+------------------
+1. 适配ros2 jazzy。
 
 tros_2.1.0rc1 (2024-04-12)
 ------------------
